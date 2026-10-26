@@ -1,0 +1,174 @@
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+@import '@fontsource/jetbrains-mono/400.css';
+@import '@fontsource/jetbrains-mono/500.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Theme tokens (RGB triplets so Tailwind alpha works) ─────────── */
+:root,
+.dark {
+  --c-base: 11 15 20; /* #0B0F14 */
+  --c-surface: 18 24 33; /* #121821 */
+  --c-surface-2: 26 34 46;
+  --c-edge: 30 39 50; /* #1E2732 */
+  --c-ink: 230 237 243; /* #E6EDF3 */
+  --c-ink-2: 155 168 183; /* #9BA8B7 */
+  --c-ink-3: 92 103 115; /* #5C6773 */
+  --c-accent: 78 161 255; /* #4EA1FF */
+  --c-accent-2: 34 211 166; /* #22D3A6 */
+  --c-warn: 245 177 76; /* #F5B14C */
+  --c-danger: 255 93 93; /* #FF5D5D */
+  --c-chart-a: 124 139 161; /* #7C8BA1 */
+  color-scheme: dark;
+}
+
+.light {
+  --c-base: 247 249 251; /* #F7F9FB */
+  --c-surface: 255 255 255;
+  --c-surface-2: 241 245 249;
+  --c-edge: 222 229 237;
+  --c-ink: 11 15 20; /* #0B0F14 */
+  --c-ink-2: 71 85 105;
+  --c-ink-3: 130 143 160;
+  --c-accent: 37 121 214; /* darkened for contrast */
+  --c-accent-2: 13 166 128;
+  --c-warn: 201 134 30;
+  --c-danger: 220 56 56;
+  --c-chart-a: 124 139 161;
+  color-scheme: light;
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    @apply bg-base font-sans text-[14px] text-ink;
+  }
+  ::selection {
+    background: rgb(var(--c-accent) / 0.35);
+  }
+  *:focus-visible {
+    outline: 2px solid rgb(var(--c-accent) / 0.8);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+@layer components {
+  .panel {
+    @apply rounded-panel border border-edge bg-surface p-4 shadow-panel;
+  }
+  .light .panel {
+    @apply shadow-panel-light;
+  }
+  .section-title {
+    @apply text-[11px] font-semibold uppercase tracking-[0.08em] text-ink-2;
+  }
+  .stat-value {
+    @apply font-semibold tabular-nums;
+    font-variant-numeric: tabular-nums;
+  }
+  .mono {
+    @apply font-mono text-[12.5px];
+    font-variant-ligatures: none;
+  }
+}
+
+@layer utilities {
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(var(--c-edge)) transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: rgb(var(--c-edge));
+    border-radius: 4px;
+  }
+}
+
+/* Range slider — precision-instrument styling */
+input[type='range'] {
+  @apply h-1.5 w-full cursor-pointer appearance-none rounded-full;
+  background: linear-gradient(
+    to right,
+    rgb(var(--c-accent)) 0%,
+    rgb(var(--c-accent)) var(--fill, 50%),
+    rgb(var(--c-edge)) var(--fill, 50%),
+    rgb(var(--c-edge)) 100%
+  );
+}
+input[type='range']::-webkit-slider-thumb {
+  @apply h-4 w-4 appearance-none rounded-full border-2 border-accent bg-surface;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  transition: transform 120ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+input[type='range']::-webkit-slider-thumb:hover,
+input[type='range']:focus-visible::-webkit-slider-thumb {
+  transform: scale(1.2);
+}
+input[type='range']::-moz-range-thumb {
+  height: 16px;
+  width: 16px;
+  border-radius: 9999px;
+  border: 2px solid rgb(var(--c-accent));
+  background: rgb(var(--c-surface));
+}
+
+/* Out-of-range shake for numeric fields */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  75% { transform: translateX(3px); }
+}
+.shake {
+  animation: shake 180ms ease-in-out 2;
+}
+
+/* AI summary skeleton shimmer */
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+.skeleton {
+  border-radius: 6px;
+  background: linear-gradient(
+    90deg,
+    rgb(var(--c-surface-2)) 25%,
+    rgb(var(--c-edge)) 50%,
+    rgb(var(--c-surface-2)) 75%
+  );
+  background-size: 800px 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+
+/* Wheel-lift pulse */
+@keyframes danger-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+.danger-pulse {
+  animation: danger-pulse 0.9s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton,
+  .danger-pulse,
+  .shake {
+    animation: none;
+  }
+  * {
+    transition-duration: 0.01ms !important;
+  }
+}
